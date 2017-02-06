@@ -1,0 +1,41 @@
+﻿<UserControl x:Class="TicketClient.Views.Abount"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="350" d:DesignWidth="350">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="1.*"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="60"/>
+        </Grid.RowDefinitions>
+        <Label Content="关于" FontSize="20" FontWeight="Bold" Foreground="#3FB2DF" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+        <Border Margin="0,48,0,0" Height="2" Background="#FF41B1E1" />
+        <Button Width="25" Height="25" Name="btnAbountClose" ToolTip="关闭" Cursor="Hand" Margin="0 -13 -13 0" VerticalAlignment="Top" HorizontalAlignment="Right" Grid.ColumnSpan="2" Panel.ZIndex="2">
+            <Button.Template>
+                <ControlTemplate>
+                    <Ellipse>
+                        <Ellipse.Fill>
+                            <ImageBrush ImageSource="../Images/close.png" />
+                        </Ellipse.Fill>
+                    </Ellipse>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
+        <Image Grid.Row="1" Source="../Images/ic_train.ico" />
+        <Label Grid.Row="2" Content="12306助手 1.9" Foreground="#3FB2DF" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="20"/>
+        <Label Grid.Row="3" Content="开发者：Long.Woo" Foreground="#3FB2DF" FontSize="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+        <Rectangle Grid.Row="4" Width="50" Height="50" MouseLeftButtonUp="github_MouseLeftButtonUp" Cursor="Hand" ToolTip="GitHub">
+            <Rectangle.Fill>
+                <VisualBrush Visual="{StaticResource appbar_github}" />
+            </Rectangle.Fill>
+            <Rectangle.Effect>
+                <DropShadowEffect Direction="600"/>
+            </Rectangle.Effect>
+        </Rectangle>
+    </Grid>
+</UserControl>

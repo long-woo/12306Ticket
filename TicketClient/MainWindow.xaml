@@ -1,0 +1,108 @@
+﻿<Controls:MetroWindow x:Class="TicketClient.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:Views="clr-namespace:TicketClient.Views"
+        Title="12306助手" 
+        Height="450" 
+        Width="800" 
+        WindowStartupLocation="CenterScreen"
+        Icon="/Images/ic_train.ico"
+        GlowBrush="{DynamicResource AccentColorBrush}" Loaded="MetroWindow_Loaded" StateChanged="MetroWindow_StateChanged" Closing="MetroWindow_Closing" Closed="MetroWindow_Closed">
+
+    <!--<Window.CommandBindings>xmlns:t="clr-namespace:TicketClient"
+        <CommandBinding Command="{x:Static t:MainWindow.VerifyCmd}" CanExecute="CommandBinding_CanExecute" Executed="CommandBinding_Executed" />
+        <CommandBinding Command="New" CanExecute="CommandBinding_CanExecute" Executed="CommandBinding_Executed" />
+    </Window.CommandBindings>-->
+
+    <Controls:MetroWindow.RightWindowCommands>
+        <Controls:WindowCommands Name="ctlCommand">
+            <Button Content="设置" Click="cmdSet_Click" />
+            <Button Content="登录" Click="cmdOpenLogin_Click" x:Name="cmdOpenLogin" />
+        </Controls:WindowCommands>
+    </Controls:MetroWindow.RightWindowCommands>
+
+    <Controls:MetroWindow.Flyouts>
+        <Controls:FlyoutsControl>
+            <Controls:Flyout Header="设置" Position="Right" Width="300" Theme="Accent">
+                <Views:SetOption x:Name="viewSet" Padding="10" Foreground="White" />
+            </Controls:Flyout>
+        </Controls:FlyoutsControl>
+    </Controls:MetroWindow.Flyouts>
+
+    <Controls:MetroContentControl>
+        <Grid Name="gridMain">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="27"/>
+            </Grid.RowDefinitions>
+            <!--tab-->
+            <TabControl Name="tabMenu">
+                <Controls:MetroTabItem Header="新任务" Name="tabBooking">
+                    <Views:TicketBooking x:Name="viewTicketBooking" />
+                </Controls:MetroTabItem>
+                <Controls:MetroTabItem Header="待支付订单" Name="tabAwaitPay" MouseLeftButtonUp="tabAwaitPay_MouseLeftButtonUp">
+                    <Views:MyOrder x:Name="viewMyOrder" />
+                </Controls:MetroTabItem>
+            </TabControl>
+
+            <StatusBar Grid.Row="1" Background="#E4E4E4" Foreground="#000">
+                <StatusBarItem Name="staInfo"></StatusBarItem>
+            </StatusBar>
+
+            <!--遮罩层-->
+            <Grid Background="#000" Opacity="0.4" Visibility="Hidden" Name="gridPopup" Panel.ZIndex="1" />
+
+            <!--登录-->
+            <Border Name="loginPopup" Width="300" Height="245" Panel.ZIndex="2" Background="#fff" Visibility="Hidden" BorderThickness="1" BorderBrush="#3FB2DF">
+                <Border.Effect>
+                    <DropShadowEffect Direction="300" BlurRadius="30"/>
+                </Border.Effect>
+                <Views:Login x:Name="viewLogin" />
+            </Border>
+
+            <!--验证码-->
+            <Border Name="verifyCodePopup" Width="294" Height="290" Background="#fff" Panel.ZIndex="3" Visibility="Hidden" BorderThickness="1" BorderBrush="#3FB2DF">
+                <Border.Effect>
+                    <DropShadowEffect Direction="300" BlurRadius="30"/>
+                </Border.Effect>
+                <Views:VerifyCode x:Name="viewVerifyCode" />
+            </Border>
+
+            <!--任务-->
+            <Border Name="ticketTaskPopup" Width="450" Height="300" Background="#fff" Panel.ZIndex="2" Visibility="Hidden" BorderThickness="1" BorderBrush="#3FB2DF">
+                <Border.Effect>
+                    <DropShadowEffect Direction="300" BlurRadius="30"/>
+                </Border.Effect>
+                <Views:TicketTask x:Name="viewTicketTask"/>
+            </Border>
+
+            <!--关于-->
+            <Border Name="abountPopup" Width="350" Height="350" Background="#fff" BorderThickness="1" BorderBrush="#3FB2DF" Panel.ZIndex="5" Visibility="Hidden">
+                <Border.Effect>
+                    <DropShadowEffect Direction="300" BlurRadius="30"/>
+                </Border.Effect>
+                <Views:Abount x:Name="viewAbout"/>
+            </Border>
+
+            <!--等待动画-->
+            <Controls:ProgressRing Grid.RowSpan="2" IsActive="False" Name="progressRingAnima" Panel.ZIndex="4" />
+
+            <!--预订的车次-->
+            <Label Name="lblBookingTrain" Visibility="Hidden"/>
+
+            <!--选中的席别-->
+            <Label Name="lblChkSeatType" Visibility="Hidden"/>
+
+            <!--确认订单所需的参数-->
+            <Label Name="lblOrderToken" Visibility="Hidden"/>
+            <Label Name="lblPassengerTicket" Visibility="Hidden" />
+            <Label Name="lblOldPassenger" Visibility="Hidden" />
+            <Label Name="lblKeyCheckChange" Visibility="Hidden" />
+            <Label Name="lblLeftTicket" Visibility="Hidden" />
+            <Label Name="lblTrainLocation" Visibility="Hidden" />
+            <Label Name="lblFromStation" Visibility="Hidden"/>
+            <Label Name="lblToStation" Visibility="Hidden"/>
+        </Grid>
+    </Controls:MetroContentControl>
+</Controls:MetroWindow>

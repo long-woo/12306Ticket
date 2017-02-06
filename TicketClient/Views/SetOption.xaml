@@ -1,0 +1,27 @@
+﻿<UserControl x:Class="TicketClient.Views.SetOption"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="150" />
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1.*"/>
+            <ColumnDefinition Width="1.*"/>
+        </Grid.ColumnDefinitions>
+        <Controls:ToggleSwitch Grid.ColumnSpan="2" OnLabel="开启" OffLabel="关闭" Header="验证码云识别" Name="tgsVerifyCodeOCR" IsEnabled="False" ToolTip="暂时无法使用" Foreground="#fff" />
+        <Controls:ToggleSwitch Grid.Row="1" Grid.ColumnSpan="2" OnLabel="开启" OffLabel="关闭" Header="预订成功语音提示" Name="tgsSpeech" Foreground="#fff" Checked="tgsSpeech_Checked" Unchecked="tgsSpeech_Unchecked" />
+        <!--<Label Grid.Row="2" Grid.ColumnSpan="2" Content="赞助（支付宝、微信）" VerticalContentAlignment="Center" Foreground="#fff" FontSize="16"/>
+        <Image Grid.Row="3" Source="/Images/qr_zfb.png"/>
+        <Image Grid.Row="3" Grid.Column="1" Source="/Images/qr_wx.jpg" />-->
+    </Grid>
+</UserControl>
