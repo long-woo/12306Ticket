@@ -48,7 +48,7 @@ namespace TicketClient.Helpers
             {
                 return true;
             };
-            // 预热httpclient
+            //预热httpclient
             var message = new HttpRequestMessage
             {
                 //Method = new HttpMethod("HEAD"),
@@ -882,7 +882,7 @@ namespace TicketClient.Helpers
                                       //SeatInfo = GetSeatInfo(t["queryLeftNewDTO"]["seat_feature"].ToString(), t["queryLeftNewDTO"]["yp_info"].ToString()), // 席别信息（席别、价格、票数）
                                       //CanBuySeat = GetSeatInfo(t["queryLeftNewDTO"]["canWebBuy"].ToString(), t["queryLeftNewDTO"]["seat_feature"].ToString(), t["queryLeftNewDTO"]["yp_info"].ToString()), // 可预订的席别（不包含价格和票数）
                                       SeatInfo = GetSeatTypes(t["queryLeftNewDTO"]),
-                                      Remark= GetRemark(t["queryLeftNewDTO"]["canWebBuy"].ToString(), t),
+                                      Remark = GetRemark(t["queryLeftNewDTO"]["canWebBuy"].ToString(), t),
                                       Form = string.Format("{0}\r{1}", t["queryLeftNewDTO"]["from_station_name"], t["queryLeftNewDTO"]["start_time"]),
                                       To = string.Format("{0}\r{1}", t["queryLeftNewDTO"]["to_station_name"], t["queryLeftNewDTO"]["arrive_time"]),
                                       IsCanBuy = t["queryLeftNewDTO"]["canWebBuy"].ToString() == "Y", // 是否可以预订
