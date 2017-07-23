@@ -831,64 +831,42 @@ namespace TicketClient.Helpers
 
                 if ((bool)json["status"])
                 {
-                    lstTickets = (from t in json["data"].Children()
-                                  where t["queryLeftNewDTO"]["canWebBuy"].ToString() == isBuy || isBuy == ""
-                                  select new
-                                  {
-                                      TrainNo = t["queryLeftNewDTO"]["train_no"], // 车次编号
-                                      TrainCode = t["queryLeftNewDTO"]["station_train_code"], // 车次
-                                      StartStationCode = t["queryLeftNewDTO"]["start_station_telecode"], // 始发站编号
-                                      StartStationName = t["queryLeftNewDTO"]["start_station_name"], // 始发站名称
-                                      EndStationCode = t["queryLeftNewDTO"]["end_station_telecode"], // 终点站编号
-                                      EndStationName = t["queryLeftNewDTO"]["end_station_name"], // 终点站名称
-                                      FromStationCode = t["queryLeftNewDTO"]["from_station_telecode"], // 出发站编号
-                                      FromStationName = t["queryLeftNewDTO"]["from_station_name"], // 出发站名称
-                                      ToStationCode = t["queryLeftNewDTO"]["to_station_telecode"], // 到达站编号
-                                      ToStationName = t["queryLeftNewDTO"]["to_station_name"], // 到达站名称
-                                      StartTime = t["queryLeftNewDTO"]["start_time"], // 出发时间,
-                                      ArriveTime = t["queryLeftNewDTO"]["arrive_time"], // 到达时间
-                                      DayDifference = GetDayDifference(t["queryLeftNewDTO"]["day_difference"].ToString()), // 天数
-                                      TrainClassName = t["queryLeftNewDTO"]["train_class_name"],
-                                      DurationTime = t["queryLeftNewDTO"]["lishi"], // 历时
-                                      DurationMin = t["queryLeftNewDTO"]["lishiValue"], // 历时分钟
-                                      YPInfo = t["queryLeftNewDTO"]["yp_info"], // 包含席别、价格、票数信息
-                                      ControlTrainDay = t["queryLeftNewDTO"]["control_train_day"],
-                                      StartTrainDate = t["queryLeftNewDTO"]["start_train_date"], //出发日期
-                                      SeatFeature = t["queryLeftNewDTO"]["seat_feature"], // 座位特征
-                                      YPEX = t["queryLeftNewDTO"]["yp_ex"],
-                                      TrainSeatFeature = t["queryLeftNewDTO"]["train_seat_feature"],
-                                      SeatType = t["queryLeftNewDTO"]["seat_types"], // 席别
-                                      LocationCode = t["queryLeftNewDTO"]["location_code"],
-                                      FromStationNo = t["queryLeftNewDTO"]["from_station_no"],
-                                      ToStationNo = t["queryLeftNewDTO"]["to_station_no"],
-                                      ControlDay = t["queryLeftNewDTO"]["control_day"], // 离出发日期天数
-                                      SaleTime = t["queryLeftNewDTO"]["sale_time"], // 预售时间
-                                      IsSupportCard = t["queryLeftNewDTO"]["is_support_card"], // 是否凭二代身份证直接进出站
-                                      ControlTrainFlag = t["queryLeftNewDTO"]["controlled_train_flag"],
-                                      ControlTrainMessage = t["queryLeftNewDTO"]["controlled_train_message"],
-                                      //GGCount = t["queryLeftNewDTO"]["gg_num"], // 观光座
-                                      //GRCount = t["queryLeftNewDTO"]["gr_num"], // 高级软卧
-                                      //QTCount = t["queryLeftNewDTO"]["qt_num"], // 其他
-                                      //RWCount = t["queryLeftNewDTO"]["rw_num"], // 软卧
-                                      //RZCount = t["queryLeftNewDTO"]["rz_num"], // 软座
-                                      //TZCount = t["queryLeftNewDTO"]["tz_num"], // 特等座
-                                      //WZCount = t["queryLeftNewDTO"]["wz_num"], // 无座
-                                      //YBCount = t["queryLeftNewDTO"]["yb_num"], // 一等包座
-                                      //YWCount = t["queryLeftNewDTO"]["yw_num"], // 硬卧
-                                      //YZCount = t["queryLeftNewDTO"]["yz_num"], // 硬座
-                                      //ZECount = t["queryLeftNewDTO"]["ze_num"], // 二等座
-                                      //ZYCount = t["queryLeftNewDTO"]["zy_num"], // 一等座
-                                      //SWZCount = t["queryLeftNewDTO"]["swz_num"], // 商务座
-                                      //SeatInfo = GetSeatInfo(t["queryLeftNewDTO"]["seat_feature"].ToString(), t["queryLeftNewDTO"]["yp_info"].ToString()), // 席别信息（席别、价格、票数）
-                                      //CanBuySeat = GetSeatInfo(t["queryLeftNewDTO"]["canWebBuy"].ToString(), t["queryLeftNewDTO"]["seat_feature"].ToString(), t["queryLeftNewDTO"]["yp_info"].ToString()), // 可预订的席别（不包含价格和票数）
-                                      SeatInfo = GetSeatTypes(t["queryLeftNewDTO"]),
-                                      Remark = GetRemark(t["queryLeftNewDTO"]["canWebBuy"].ToString(), t),
-                                      Form = string.Format("{0}\r{1}", t["queryLeftNewDTO"]["from_station_name"], t["queryLeftNewDTO"]["start_time"]),
-                                      To = string.Format("{0}\r{1}", t["queryLeftNewDTO"]["to_station_name"], t["queryLeftNewDTO"]["arrive_time"]),
-                                      IsCanBuy = t["queryLeftNewDTO"]["canWebBuy"].ToString() == "Y", // 是否可以预订
-                                      CanBuyDescript = t["queryLeftNewDTO"]["canWebBuy"].ToString() == "Y" ? "可预订" : "不可预订",
-                                      SecretStr = t["secretStr"] // 预订凭证
-                                  }).ToList<dynamic>();
+                    var arrTickets = json["data"]["result"];
+                    var stationNames = json["data"]["map"];
+
+                    foreach (string item in arrTickets)
+                    {
+                        var arrTrain = item.Split('|');
+                        string trainCode = arrTrain[3];
+                        string fromCityName = stationNames[arrTrain[6]].ToString();
+                        string toCityName = stationNames[arrTrain[7]].ToString();
+                        string departureTime = arrTrain[8];
+                        string arrivalTime = arrTrain[9];
+
+                        lstTickets.Add(new
+                        {
+                            TranType = trainCode.Substring(0, 1), // 车次类别
+                            TrainNo = arrTrain[2], // 车次编号
+                            TrainCode = trainCode, // 车次
+                            FromCityCode = arrTrain[6],
+                            FromCityName = fromCityName,
+                            ToCityCode = arrTrain[7],
+                            ToCityName = toCityName,
+                            DepartureTime = departureTime,
+                            ArrivalTime = arrivalTime,
+                            UseTime = arrTrain[10],
+                            Form = string.Format("{0}\r{1}", fromCityName, departureTime),
+                            To = string.Format("{0}\r{1}", toCityName, arrivalTime),
+                            IsBuy = arrTrain[11] == "Y" ? true : false,
+                            CanBuyDescript= arrTrain[11] == "Y" ? "可预订" : "不可预订",
+                            YPInfo = arrTrain[12],
+                            LocationCode = arrTrain[15],
+                            SeatTypeCodes = GetSeatTypeCodes(arrTrain[35]),
+                            SeatTypes = GetSeatTypes(arrTrain),
+                            Secret = arrTrain[0],
+                            Remark = GetRemark(arrTrain)
+                        });
+                    }
                 }
             }
             catch (Exception)
@@ -1096,13 +1074,8 @@ namespace TicketClient.Helpers
 
                 Dictionary<string, object> dicData = json["data"].ToObject<Dictionary<string, object>>();
                 string seatType = string.Format("{0}0", formParams["seatType"]),
-                    seatName = GetSeatName(formParams["seatType"]), // 座位名称
+                    seatName = GetSeatTypeInfo(formParams["seatType"], null), // 座位名称
                     tiketCount = dicData["ticket"].ToString(); // 剩余票数
-                //var lstSeatInfo = GetSeatInfo(seatType, dicData["ticket"].ToString());
-                //var seatInfo = (from c in lstSeatInfo
-                //                where c.SeatTypeCode == formParams["seatType"]
-                //                select c).FirstOrDefault();
-                //string strResult = string.Format("本次列车，剩余【{0}({1})】张", seatName, seatInfo.SeatCount);
                 string strResult = string.Format("本次列车，剩余【{0}（{1}）】张", seatName, tiketCount);
 
                 if (Convert.ToBoolean(dicData["op_2"]))
@@ -1262,259 +1235,95 @@ namespace TicketClient.Helpers
         #endregion
 
         /// <summary>
-        /// 获取席别名称
+        /// 处理座位代码
         /// </summary>
-        /// <param name="seatType">席别编号</param>
+        /// <param name="seatCodes"></param>
         /// <returns></returns>
-        public static string GetSeatName(string seatType)
+        private static List<string> GetSeatTypeCodes(string seatCodes)
         {
-            switch (seatType)
-            {
-                case "Q":
-                    return "观光座";
-                case "9":
-                    return "商务座";
-                case "P":
-                    return "特等座";
-                case "S":
-                    return "一等包座";
-                case "M":
-                    return "一等座";
-                case "O":
-                    return "二等座";
-                case "6":
-                    return "高级软卧";
-                case "4":
-                    return "软卧";
-                case "3":
-                    return "硬卧";
-                case "2":
-                    return "软座";
-                case "1":
-                    return "硬座";
-                case "W":
-                    return "无座";
-                default:
-                    return "其他";
-            }
+            var seats = seatCodes.Replace(@"/(1)/", "w").ToCharArray().Select(s => s.ToString()).ToList();
+
+            return seats;
         }
 
         /// <summary>
-        /// 获取座位票数
+        /// 座位信息
         /// </summary>
-        /// <param name="seatType">席别代码</param>
-        /// <param name="jSeatType"></param>
+        /// <param name="trains"></param>
         /// <returns></returns>
-        private static string GetSeatTicketCount(string seatType, JToken jSeatType)
+        private static List<dynamic> GetSeatTypes(string[] trains)
         {
-            switch (seatType)
+            var seats = GetSeatTypeCodes(trains[35]);
+            List<dynamic> lstSeats = new List<dynamic>();
+
+            foreach (var code in seats)
             {
-                case "Q":
-                    return jSeatType["gg_num"].ToString();
-                case "9":
-                    return jSeatType["swz_num"].ToString();
-                case "P":
-                    return jSeatType["tz_num"].ToString();
-                case "S":
-                    return jSeatType["yb_num"].ToString();
-                case "M":
-                    return jSeatType["zy_num"].ToString();
-                case "O":
-                    return jSeatType["ze_num"].ToString();
-                case "6":
-                    return jSeatType["gr_num"].ToString();
-                case "4":
-                    return jSeatType["rw_num"].ToString();
-                case "3":
-                    return jSeatType["yw_num"].ToString();
-                case "2":
-                    return jSeatType["rz_num"].ToString();
-                case "1":
-                    return jSeatType["yz_num"].ToString();
-                case "W":
-                    return jSeatType["wz_num"].ToString();
-                default:
-                    return jSeatType["qt_num"].ToString();
-            }
-        }
+                var info = GetSeatTypeInfo(code, trains);
 
-        /// <summary>
-        /// 获取席别信息（席别、价格、票数）
-        /// </summary>
-        /// <param name="seatFeature">席别</param>
-        /// <param name="ypInfo">席别、价格、票数</param>
-        /// <returns></returns>
-        private static List<dynamic> GetSeatInfo(string seatFeature, string ypInfo)
-        {
-            List<dynamic> lstSeatInfos = new List<dynamic>();
-
-            int ypInfoLength = ypInfo.Length;
-
-            for (int i = 0; i < seatFeature.Length / 2; i++)
-            {
-                string strSeatFeature = seatFeature.Substring(i * 2, 1),
-                    newYPInfoStr = ypInfo.Substring(i * 10, 10),
-                    strSeatTypeCode = "", // 席别Code
-                    strSeatTypeName = "", // 席别名称
-                    strSeatPrice = "", // 席别价格
-                    strSeatCount = ""; // 席别票数
-
-                // 第一位为席别
-                strSeatTypeCode = strSeatFeature;
-                strSeatTypeName = GetSeatName(strSeatTypeCode);
-
-                for (int j = 0; j < newYPInfoStr.Length; j++)
+                lstSeats.Add(new
                 {
-                    if (j > 0 && j <= 5)
-                    {
-                        // 后五位为票价
-                        strSeatPrice += newYPInfoStr[j].ToString();
-                    }
-                    else if (j > 5)
-                    {
-                        // 剩下的位数为票数
-                        strSeatCount += newYPInfoStr[j].ToString();
-                    }
-                }
-
-                double seatPrice = double.Parse(strSeatPrice.Insert(4, "."));
-                int seatCount = int.Parse(strSeatCount);
-
-                lstSeatInfos.Add(new
-                {
-                    SeatTypeCode = strSeatTypeCode,
-                    SeatTypeName = strSeatTypeName,
-                    SeatPrice = string.Format("{0:C}", seatPrice),
-                    SeatCount = seatCount
+                    seatCode = code,
+                    seatInfo = info
                 });
             }
 
-            return lstSeatInfos;
+            return lstSeats;
         }
 
         /// <summary>
-        /// 获取席别信息（席别、价格、票数）
+        /// 获取座位信息
         /// </summary>
-        /// <param name="isCanBuy">是否可以预订</param>
-        /// <param name="seatFeature">席别</param>
-        /// <param name="ypInfo">席别、价格、票数</param>
+        /// <param name="seatCode"></param>
+        /// <param name="trains"></param>
         /// <returns></returns>
-        private static string GetSeatInfo(string isCanBuy, string seatFeature, string ypInfo)
+        public static string GetSeatTypeInfo(string seatCode, string[] trains)
         {
-            string seatInfo = "";
-
-            if (isCanBuy != "Y")
+            switch (seatCode)
             {
-                return "没有可预订的席别信息";
-            }
-
-            var result = GetSeatInfo(seatFeature, ypInfo);
-
-            if (result.Count < 1)
-            {
-                return "没有可预订的席别信息";
-            }
-
-            foreach (var seat in result)
-            {
-                if (seat.SeatCount > 0)
-                {
-                    seatInfo += string.Format("{0}（{1}张）\t", seat.SeatTypeName, seat.SeatCount);
-                }
-            }
-            return seatInfo;
-        }
-
-        /// <summary>
-        /// 获取席别信息
-        /// </summary>
-        /// <param name="seatFeature">席别</param>
-        /// <returns></returns>
-        private static List<dynamic> GetSeatTypes(JToken jSeatType)
-        {
-            List<dynamic> lstSeatTypes = new List<dynamic>();
-            string seatFeature = jSeatType["seat_feature"].ToString();
-
-            for (int i = 0; i < seatFeature.Length / 2; i++)
-            {
-                string strSeatTypeCode = seatFeature.Substring(i * 2, 1), // 席别代码
-                    strSeatTypeName = GetSeatName(strSeatTypeCode), // 席别名称
-                    strSeatCount = GetSeatTicketCount(strSeatTypeCode, jSeatType); // 席别票数
-
-                if (!"-".Contains(strSeatCount))
-                {
-                    lstSeatTypes.Add(new
-                    {
-                        SeatTypeCode = strSeatTypeCode,
-                        SeatTypeName = strSeatTypeName,
-                        SeatCount = strSeatCount
-                    });
-                }
-            }
-
-            return lstSeatTypes;
-        }
-
-        /// <summary>
-        /// 获取席别信息
-        /// </summary>
-        /// <param name="isCanBuy">是否可以预订</param>
-        /// <param name="seatFeature">席别</param>
-        /// <returns></returns>
-        private static string GetRemark(string isCanBuy, JToken ticket)
-        {
-            string seatInfo = "";
-
-            if (isCanBuy != "Y")
-            {
-                if (isCanBuy == "IS_TIME_NOT_BUY")
-                {
-                    return ticket["buttonTextInfo"].ToString();
-                }
-                return "没有可预订的席别信息";
-            }
-
-            var lstSeatTypes = GetSeatTypes(ticket["queryLeftNewDTO"]);
-
-            foreach (var item in lstSeatTypes)
-            {
-                if (item.SeatCount != "无")
-                {
-                    seatInfo += string.Format("{0}（{1}）\t", item.SeatTypeName, item.SeatCount);
-                }
-            }
-
-            return seatInfo;
-        }
-
-        /// <summary>
-        /// 获取到达天数
-        /// </summary>
-        /// <param name="day"></param>
-        /// <returns></returns>
-        private static string GetDayDifference(string day)
-        {
-            switch (day)
-            {
-                case "0":
-                    return "当日到达";
-                case "1":
-                    return "次日到达";
-                case "2":
-                    return "两天内到达";
-                case "3":
-                    return "三天内到达";
-                case "4":
-                    return "四天内到达";
-                case "5":
-                    return "五天内到达";
+                case "Q":
+                    return trains != null ? $"观光座（{trains[20]}）" : "观光座";
+                case "9":
+                    return trains != null ? $"商务座（{ trains[32]}）" : "商务座";
+                case "P":
+                    return trains != null ? $"特等座（{ trains[25]}）" : "特等座";
+                case "S":
+                    return trains != null ? $"一等包座（{ trains[27]}）" : "一等包座";
+                case "M":
+                    return trains != null ? $"一等座（{ trains[31]}）" : "一等座";
+                case "O":
+                    return trains != null ? $"二等座（{ trains[30]}）" : "二等座";
                 case "6":
-                    return "六天内到达";
-                case "7":
-                    return "七天内到达";
+                    return trains != null ? $"高级软卧（{ trains[21]}）" : "高级软卧";
+                case "4":
+                    return trains != null ? $"软卧（{ trains[23]}）" : "软卧";
+                case "3":
+                    return trains != null ? $"硬卧（{ trains[28]}）" : "硬卧";
+                case "2":
+                    return trains != null ? $"软座（{ trains[24]}）" : "软座";
+                case "1":
+                    return trains != null ? $"硬座（{ trains[29]}）" : "硬座";
+                case "W":
+                    return trains != null ? $"无座（{ trains[26]}）" : "无座";
                 default:
-                    return "七天以上到达";
+                    return trains != null ? $"其他（{ trains[22]}）" : "其他";
             }
+        }
+
+        /// <summary>
+        /// 备注信息
+        /// </summary>
+        /// <param name="trains"></param>
+        /// <returns></returns>
+        private static string GetRemark(string[] trains)
+        {
+            var lstSeats = GetSeatTypes(trains);
+
+            var seatInfos = from s in lstSeats
+                       select s.seatInfo;
+
+            string result = string.Join("\t", seatInfos.ToArray());
+
+            return result;
         }
     }
 }

@@ -503,7 +503,7 @@ namespace TicketClient
         async void disTimer_Tick(object sender, EventArgs e)
         {
             staInfo.Content = string.Format("{0}秒后，开始第【{1}】次查询...", queryTime, (queryCount));
-            
+
             if (queryTime - 0.1 < 0.1)
             {
                 disTimer.Stop(); // 查询到车次，停止计时器
@@ -1019,7 +1019,7 @@ namespace TicketClient
                     viewTicketTask.lblTaskTo.Text = toStationName;
                     viewTicketTask.lblTaskTrain.Content = trainCode;
                     viewTicketTask.lblTaskPassenger.Content = GetChkeckedContent(viewTicketBooking.gridContacts);
-                    viewTicketTask.lblTaskSeat.Content = TicketHelpers.GetSeatName(seatTypeCode);
+                    viewTicketTask.lblTaskSeat.Content = TicketHelpers.GetSeatTypeInfo(seatTypeCode, null);
                     OpenBookingTaskPopup(true);
                     // 提交订单
                     Dictionary<string, string> formParams = new Dictionary<string, string>()
